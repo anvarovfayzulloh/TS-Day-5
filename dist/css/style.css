@@ -1,0 +1,8 @@
+#myChart {
+    width: 150px;
+    height: 150px;
+}
+.transaction{
+    display: flex;
+    gap: 10px;
+}
