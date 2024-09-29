@@ -16,9 +16,15 @@ const $displayIncomes = document.querySelector("#displayIncomes");
 const $displayExpenses = document.querySelector("#displayExpenses");
 //@ts-ignore
 const $transactionList = document.querySelector("#transactionList");
+//@ts-ignore
+const $clearBtn = document.querySelector("#clearBtn");
 const url = new URL(location.href);
 const INCOMES = JSON.parse(localStorage.getItem("incomes")) || [];
 const EXPENSES = JSON.parse(localStorage.getItem("expenses")) || [];
+$clearBtn.addEventListener("click", () => {
+    localStorage.clear();
+    location.reload();
+});
 String.prototype.seperateCurrency = function () {
     return this.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
@@ -30,8 +36,8 @@ let totalExpense = 0;
 const checkBalance = () => {
     totalIncome = INCOMES.reduce((acc, cur) => acc + cur.transactionAmount, 0);
     totalExpense = EXPENSES.reduce((acc, cur) => acc + cur.transactionAmount, 0);
-    $displayIncomes.innerHTML = `${(totalIncome - totalExpense).toString().seperateCurrency()}`;
-    $displayExpenses.innerHTML = `${(totalExpense).toString().seperateCurrency()}`;
+    $displayIncomes.innerHTML = `${(totalIncome - totalExpense).toString().seperateCurrency()} UZS`;
+    $displayExpenses.innerHTML = `${(totalExpense).toString().seperateCurrency()} UZS`;
 };
 checkBalance();
 //@ts-ignore
@@ -76,7 +82,7 @@ const getTopCategories = () => {
     });
     const sortedCategories = Object.entries(categoryTotals)
         .sort((a, b) => b[1] - a[1])
-        .slice(0, 3);
+        .slice(0, 5);
     return sortedCategories;
 };
 const renderBarChart = () => {
@@ -102,12 +108,12 @@ const renderBarChart = () => {
                 }],
         },
         options: {
-            responsive: false,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
+        // responsive: false,
+        // scales: {
+        //     y: {
+        //         beginAtZero: true
+        //     }
+        // }
         }
     });
 };
@@ -150,7 +156,7 @@ const renderTransactions = () => {
         $transactionTableBody.innerHTML += `
                 <tr class="transactionTable transactionIncome">
                     <td>${income.transactionName}</td>
-                    <td>${income.transactionAmount.toString().seperateCurrency()}</td>
+                    <td>${income.transactionAmount.toString().seperateCurrency()} UZS</td>
                     <td>Income</td>
                     <td>${new Date(income.date).toLocaleDateString()}</td>
                 </tr>
@@ -160,7 +166,7 @@ const renderTransactions = () => {
         $transactionTableBody.innerHTML += `
                 <tr class="transactionTable transactionExpense">
                     <td>${expense.transactionName}</td>
-                    <td>${expense.transactionAmount.toString().seperateCurrency()}</td>
+                    <td>${expense.transactionAmount.toString().seperateCurrency()} UZS</td>
                     <td>Expense</td>
                     <td>${new Date(expense.date).toLocaleDateString()}</td>
                 </tr>

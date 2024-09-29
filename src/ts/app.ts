@@ -14,6 +14,8 @@ const $displayIncomes = document.querySelector("#displayIncomes") as HTMLElement
 const $displayExpenses = document.querySelector("#displayExpenses") as HTMLElement;
 //@ts-ignore
 const $transactionList = document.querySelector("#transactionList") as HTMLDivElement;
+//@ts-ignore
+const $clearBtn = document.querySelector("#clearBtn") as HTMLButtonElement;
 
 const url = new URL(location.href);
 const INCOMES = JSON.parse(localStorage.getItem("incomes") as string) || [];
@@ -26,6 +28,11 @@ type Tincome = {
     type: string;
     date: number;
 };
+
+$clearBtn.addEventListener("click", () => {
+    localStorage.clear();
+    location.reload();
+})
 
 export {};
 
@@ -50,8 +57,8 @@ const checkBalance = () => {
     totalIncome = INCOMES.reduce((acc: number, cur: Tincome) => acc + cur.transactionAmount, 0);
     totalExpense = EXPENSES.reduce((acc: number, cur: Tincome) => acc + cur.transactionAmount, 0);
 
-    $displayIncomes.innerHTML = `${(totalIncome - totalExpense).toString().seperateCurrency()}`;
-    $displayExpenses.innerHTML = `${(totalExpense).toString().seperateCurrency()}`;
+    $displayIncomes.innerHTML = `${(totalIncome - totalExpense).toString().seperateCurrency()} UZS`;
+    $displayExpenses.innerHTML = `${(totalExpense).toString().seperateCurrency()} UZS`;
 };
 
 checkBalance();
@@ -105,7 +112,7 @@ const getTopCategories = () => {
 
     const sortedCategories = Object.entries(categoryTotals)
         .sort((a, b) => b[1] - a[1])
-        .slice(0, 3);
+        .slice(0, 5);
 
     return sortedCategories;
 };
@@ -135,12 +142,12 @@ const renderBarChart = () => {
             }],
         },
         options: {
-            responsive: false,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
+            // responsive: false,
+            // scales: {
+            //     y: {
+            //         beginAtZero: true
+            //     }
+            // }
         }
     });
 };
@@ -155,7 +162,7 @@ const checkModalOpen = () => {
         $overlay.classList.remove("hidden");
         $select.classList.add("hidden");
     }
-    else if (openModal === "expense") {
+    else if (openModal === "expense") { 
         $overlay.classList.remove("hidden");
         $select.classList.remove("hidden");
     }
@@ -187,7 +194,7 @@ const renderTransactions = () => {
         $transactionTableBody.innerHTML += `
                 <tr class="transactionTable transactionIncome">
                     <td>${income.transactionName}</td>
-                    <td>${income.transactionAmount.toString().seperateCurrency()}</td>
+                    <td>${income.transactionAmount.toString().seperateCurrency()} UZS</td>
                     <td>Income</td>
                     <td>${new Date(income.date).toLocaleDateString()}</td>
                 </tr>
@@ -198,7 +205,7 @@ const renderTransactions = () => {
         $transactionTableBody.innerHTML += `
                 <tr class="transactionTable transactionExpense">
                     <td>${expense.transactionName}</td>
-                    <td>${expense.transactionAmount.toString().seperateCurrency()}</td>
+                    <td>${expense.transactionAmount.toString().seperateCurrency()} UZS</td>
                     <td>Expense</td>
                     <td>${new Date(expense.date).toLocaleDateString()}</td>
                 </tr>
