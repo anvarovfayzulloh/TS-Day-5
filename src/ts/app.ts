@@ -127,29 +127,30 @@ const renderTransactions = () => {
     // @ts-ignore
     const $transactionTableBody = document.querySelector("#transactionTableBody") as HTMLTableSectionElement;
     $transactionTableBody.innerHTML = "";
-    console.log(INCOMES[0].transactionType)
-    const incomeRows = INCOMES.map((income: Tincome) => `
-        <tr class="transaction">
-            <td>${income.transactionName}</td>
-            <td>${income.transactionAmount.toString().seperateCurrency()}</td>
-            <td>${income.transactionType || 'Income'}</td>
-            <td>${new Date(income.date).toLocaleDateString()}</td>
-        </tr>
-    `).join('');
 
-    const expenseRows = EXPENSES.map((expense: Tincome) => `
-        <tr class="transaction">
-            <td>${expense.transactionName}</td>
-            <td>${expense.transactionAmount.toString().seperateCurrency()}</td>
-            <td>${expense.transactionType || 'Expense'}</td>
-            <td>${new Date(expense.date).toLocaleDateString()}</td>
-        </tr>
-    `).join('');
+    INCOMES.forEach((income: Tincome) => {
+        $transactionTableBody.innerHTML += `
+            <tr>
+                <td>${income.transactionName}</td>
+                <td>${income.transactionAmount.toString().seperateCurrency()}</td>
+                <td>Income</td>
+                <td>${new Date(income.date).toLocaleDateString()}</td>
+            </tr>
+        `;
+    });
 
-    $transactionTableBody.innerHTML = incomeRows + expenseRows;
+    EXPENSES.forEach((expense: Tincome) => {
+        $transactionTableBody.innerHTML += `
+            <tr>
+                <td>${expense.transactionName}</td>
+                <td>${expense.transactionAmount.toString().seperateCurrency()}</td>
+                <td>Expense</td>
+                <td>${new Date(expense.date).toLocaleDateString()}</td>
+            </tr>
+        `;
+    });
 };
 
-renderTransactions();
 
 
 const createNewTransaction = (e: Event) => {

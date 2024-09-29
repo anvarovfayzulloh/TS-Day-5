@@ -42,7 +42,7 @@
             </div>
         </div>
         
-        <div id="transactionList" class="flex-1 shadow-[0_0px_20px_0px_lightgrey] rounded-3xl p-10 gap-10 overflow-y-auto">
+        <div id="transactionList" class="flex-1 shadow-[0_0px_20px_0px_lightgrey] rounded-3xl p-10 gap-10 overflow-y-auto w-full" style="max-height: 300px;">
             <table class="w-full table-auto">
                 <thead>
                     <tr>
@@ -55,7 +55,6 @@
                 <tbody id="transactionTableBody"></tbody>
             </table>
         </div>
-    </div>
 
     <div id="overlay" class="w-screen h-screen fixed top-0 left-0 bg-[rgba(0,0,0,0.5)] backdrop-blur-md hidden">
         <div role="alert" class="alert alert-error hidden" id="alertError">
