@@ -42,12 +42,18 @@
             </div>
         </div>
         
-        <!-- Updated Transaction List Section -->
-        <div id="transactionList" class="flex-1 shadow-[0_0px_20px_0px_lightgrey] rounded-3xl p-10 gap-10 overflow-y-auto" style="max-height: 300px;">
-            <h2 class="text-2xl font-bold mb-5">Transactions</h2>
-            <div id="transactionsContainer" class="flex flex-col gap-4">
-                <!-- Each transaction will be inserted here -->
-            </div>
+        <div id="transactionList" class="flex-1 shadow-[0_0px_20px_0px_lightgrey] rounded-3xl p-10 gap-10 overflow-y-auto">
+            <table class="w-full table-auto">
+                <thead>
+                    <tr>
+                        <th class="text-left">Name</th>
+                        <th class="text-left">Amount</th>
+                        <th class="text-left">Type</th>
+                        <th class="text-left">Date</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionTableBody"></tbody>
+            </table>
         </div>
     </div>
 

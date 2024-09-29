@@ -13,8 +13,6 @@ const $displayIncomes = document.querySelector("#displayIncomes") as HTMLElement
 //@ts-ignore
 const $displayExpenses = document.querySelector("#displayExpenses") as HTMLElement;
 //@ts-ignore
-const $chartWrapper = document.querySelector("#chartWrapper") as HTMLDivElement;
-//@ts-ignore
 const $transactionList = document.querySelector("#transactionList") as HTMLDivElement;
 
 const url = new URL(location.href);
@@ -126,20 +124,33 @@ class Transaction {
 }
 
 const renderTransactions = () => {
-    $transactionList.innerHTML = "";
-    const incomeItems = INCOMES.map((income: Tincome) => `
-            <div  class="transaction" >
-                <p>${income.transactionName}</p>
-                <p>${income.transactionAmount}</p>
-                <p>${income.transactionType}</p>
-            </div>
-        `).join('');
+    // @ts-ignore
+    const $transactionTableBody = document.querySelector("#transactionTableBody") as HTMLTableSectionElement;
+    $transactionTableBody.innerHTML = "";
+    console.log(INCOMES[0].transactionType)
+    const incomeRows = INCOMES.map((income: Tincome) => `
+        <tr class="transaction">
+            <td>${income.transactionName}</td>
+            <td>${income.transactionAmount.toString().seperateCurrency()}</td>
+            <td>${income.transactionType || 'Income'}</td>
+            <td>${new Date(income.date).toLocaleDateString()}</td>
+        </tr>
+    `).join('');
 
-    if ($transactionList) {
-        $transactionList.innerHTML = incomeItems;
-    }
+    const expenseRows = EXPENSES.map((expense: Tincome) => `
+        <tr class="transaction">
+            <td>${expense.transactionName}</td>
+            <td>${expense.transactionAmount.toString().seperateCurrency()}</td>
+            <td>${expense.transactionType || 'Expense'}</td>
+            <td>${new Date(expense.date).toLocaleDateString()}</td>
+        </tr>
+    `).join('');
+
+    $transactionTableBody.innerHTML = incomeRows + expenseRows;
 };
+
 renderTransactions();
+
 
 const createNewTransaction = (e: Event) => {
     e.preventDefault();
