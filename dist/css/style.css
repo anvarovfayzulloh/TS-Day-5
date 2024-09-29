@@ -1,15 +1,51 @@
-    #myChart {
-        width: 150px;
-        height: 150px;
-    }
-    .transaction{
-        display: flex;
-        gap: 10px;
-    }
+#myChart {
+    width: 150px;
+    height: 150px;
+    max-width: 100%;
+    max-height: 100%;
+}
 
-    .transaction{
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+.transaction {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.transaction:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    transition: background-color 0.3s ease-in-out;
+}
+
+.transactionTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.transactionTable th, .transactionTable td {
+    padding: 15px;
+    text-align: left;
+}
+
+.transactionTable th {
+    background-color: #f3f4f6;
+    font-weight: bold;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.transactionTable td {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.transactionTable tr:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.transactionTable th, .transactionTable td {
+    border: none;
+    border-bottom: 3px solid rgba(0, 0, 0, 0.266);
+}

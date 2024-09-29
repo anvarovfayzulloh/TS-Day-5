@@ -57,15 +57,19 @@ const checkBalance = () => {
 }
 checkBalance()
 
+//@ts-ignore
+let myChartInstance: Chart | null = null;
 
 const renderChart = () => {
-    // @ts-ignore
-    (document.querySelector("#myChart") as HTMLCanvasElement).innerHTML = "<canvas id='myChart'></canvas>";
-    // @ts-ignore
-    const $myChart = document.querySelector("#myChart") as HTMLCanvasElement
+    if (myChartInstance) {
+        myChartInstance.destroy();
+    }
 
-    // @ts-ignore
-    new Chart($myChart, {
+//@ts-ignore
+    const $myChart = document.querySelector("#myChart") as HTMLCanvasElement;
+
+//@ts-ignore
+    myChartInstance = new Chart($myChart, {
         type: 'doughnut',
         data: {
             datasets: [{
@@ -74,12 +78,7 @@ const renderChart = () => {
             }],
         },
         options: {
-            responsive: false,
-            plugins: {
-                legend: {
-                    position: 'top',
-                }
-            },
+            responsive: true,
             elements: {
                 arc: {
                     borderWidth: 1,
@@ -89,8 +88,7 @@ const renderChart = () => {
     });
 };
 
-renderChart();
-
+renderChart()
 
 const checkModalOpen = () => {
     let openModal = getCurrentQuery();
@@ -130,7 +128,7 @@ const renderTransactions = () => {
 
     INCOMES.forEach((income: Tincome) => {
         $transactionTableBody.innerHTML += `
-            <tr>
+            <tr class="transactionTable" >
                 <td>${income.transactionName}</td>
                 <td>${income.transactionAmount.toString().seperateCurrency()}</td>
                 <td>Income</td>
@@ -141,7 +139,7 @@ const renderTransactions = () => {
 
     EXPENSES.forEach((expense: Tincome) => {
         $transactionTableBody.innerHTML += `
-            <tr>
+            <tr class="transactionTable" >
                 <td>${expense.transactionName}</td>
                 <td>${expense.transactionAmount.toString().seperateCurrency()}</td>
                 <td>Expense</td>
@@ -150,7 +148,7 @@ const renderTransactions = () => {
         `;
     });
 };
-
+renderTransactions()
 
 
 const createNewTransaction = (e: Event) => {
@@ -180,7 +178,8 @@ const createNewTransaction = (e: Event) => {
             input.value = "";
         });
         renderChart();
-    }
+        renderTransactions()
+}
     else {
         alert("Alert")
     }

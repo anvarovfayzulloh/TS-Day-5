@@ -34,13 +34,16 @@ const checkBalance = () => {
     $displayExpenses.innerHTML = `${(totalExpense).toString().seperateCurrency()}`;
 };
 checkBalance();
+//@ts-ignore
+let myChartInstance = null;
 const renderChart = () => {
-    // @ts-ignore
-    document.querySelector("#myChart").innerHTML = "<canvas id='myChart'></canvas>";
-    // @ts-ignore
+    if (myChartInstance) {
+        myChartInstance.destroy();
+    }
+    //@ts-ignore
     const $myChart = document.querySelector("#myChart");
-    // @ts-ignore
-    new Chart($myChart, {
+    //@ts-ignore
+    myChartInstance = new Chart($myChart, {
         type: 'doughnut',
         data: {
             datasets: [{
@@ -49,12 +52,7 @@ const renderChart = () => {
                 }],
         },
         options: {
-            responsive: false,
-            plugins: {
-                legend: {
-                    position: 'top',
-                }
-            },
+            responsive: true,
             elements: {
                 arc: {
                     borderWidth: 1,
@@ -99,7 +97,7 @@ const renderTransactions = () => {
     $transactionTableBody.innerHTML = "";
     INCOMES.forEach((income) => {
         $transactionTableBody.innerHTML += `
-            <tr>
+            <tr class="transactionTable" >
                 <td>${income.transactionName}</td>
                 <td>${income.transactionAmount.toString().seperateCurrency()}</td>
                 <td>Income</td>
@@ -109,7 +107,7 @@ const renderTransactions = () => {
     });
     EXPENSES.forEach((expense) => {
         $transactionTableBody.innerHTML += `
-            <tr>
+            <tr class="transactionTable" >
                 <td>${expense.transactionName}</td>
                 <td>${expense.transactionAmount.toString().seperateCurrency()}</td>
                 <td>Expense</td>
@@ -118,6 +116,7 @@ const renderTransactions = () => {
         `;
     });
 };
+renderTransactions();
 const createNewTransaction = (e) => {
     e.preventDefault();
     const inputs = Array.from($transactionForm.querySelectorAll("input, select"));
@@ -144,6 +143,7 @@ const createNewTransaction = (e) => {
             input.value = "";
         });
         renderChart();
+        renderTransactions();
     }
     else {
         alert("Alert");
