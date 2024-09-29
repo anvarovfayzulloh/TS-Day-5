@@ -15,21 +15,19 @@ const $displayExpenses = document.querySelector("#displayExpenses") as HTMLEleme
 //@ts-ignore
 const $transactionList = document.querySelector("#transactionList") as HTMLDivElement;
 
-
 const url = new URL(location.href);
-
-const INCOMES = JSON.parse(localStorage.getItem("incomes") as string) || []
-const EXPENSES = JSON.parse(localStorage.getItem("expences") as string) || []
+const INCOMES = JSON.parse(localStorage.getItem("incomes") as string) || [];
+const EXPENSES = JSON.parse(localStorage.getItem("expenses") as string) || [];
 
 type Tincome = {
-    transactionName: string
-    transactionType: string | undefined
-    transactionAmount: number
-    type: string
-    date: number
-}
+    transactionName: string;
+    transactionType: string | undefined;
+    transactionAmount: number;
+    type: string;
+    date: number;
+};
 
-export { };
+export {};
 
 declare global {
     interface String {
@@ -41,10 +39,9 @@ String.prototype.seperateCurrency = function (): string {
     return this.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
-
 const getCurrentQuery = () => {
-    return new URLSearchParams(location.search).get('modal') || "" as string
-}
+    return new URLSearchParams(location.search).get('modal') || "";
+};
 
 let totalIncome = 0;
 let totalExpense = 0;
@@ -55,41 +52,42 @@ const checkBalance = () => {
 
     $displayIncomes.innerHTML = `${(totalIncome - totalExpense).toString().seperateCurrency()}`;
     $displayExpenses.innerHTML = `${(totalExpense).toString().seperateCurrency()}`;
-}
-checkBalance()
+};
+
+checkBalance();
 
 //@ts-ignore
 let myChartInstance: Chart | null = null;
+//@ts-ignore
+let myBarChartInstance: Chart | null = null;
 
 const renderChart = () => {
+//@ts-ignore
+    const $myChart = document.querySelector("#myChart") as HTMLCanvasElement;
+
     if (myChartInstance) {
         myChartInstance.destroy();
     }
 
-    //@ts-ignore
-    const $myChart = document.querySelector("#myChart") as HTMLCanvasElement;
-
-    //@ts-ignore
+//@ts-ignore
     myChartInstance = new Chart($myChart, {
         type: 'doughnut',
         data: {
             datasets: [{
-                data: [`${totalIncome - totalExpense}`, totalExpense],
+                data: [totalIncome - totalExpense, totalExpense],
                 backgroundColor: ['#4CAF50', '#F44336'],
             }],
         },
         options: {
             responsive: true,
-            elements: {
-                arc: {
-                    borderWidth: 1,
-                }
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
             }
         }
     });
 };
-
-renderChart()
 
 const getTopCategories = () => {
     const categoryTotals: { [key: string]: number } = {};
@@ -113,18 +111,18 @@ const getTopCategories = () => {
 };
 
 const renderBarChart = () => {
-    if (myChartInstance) {
-        myChartInstance.destroy();
+    if (myBarChartInstance) {
+        myBarChartInstance.destroy();
     }
 
     const topCategories = getTopCategories();
     const labels = topCategories.map(([type]) => type);
     const data = topCategories.map(([_, total]) => total);
 
-    //@ts-ignore
+//@ts-ignore
     const $myBarChart = document.querySelector("#myBarChart") as HTMLCanvasElement;
-    //@ts-ignore
-    myChartInstance = new Chart($myBarChart, {
+//@ts-ignore
+    myBarChartInstance = new Chart($myBarChart, {
         type: 'bar',
         data: {
             labels: labels,
@@ -147,9 +145,8 @@ const renderBarChart = () => {
     });
 };
 
+renderChart();
 renderBarChart();
-
-
 
 const checkModalOpen = () => {
     let openModal = getCurrentQuery();
@@ -163,32 +160,32 @@ const checkModalOpen = () => {
         $select.classList.remove("hidden");
     }
     else {
-        $overlay.classList.add("hidden")
+        $overlay.classList.add("hidden");
     }
-}
+};
 
 class Transaction {
-    transactionName: string
-    transactionType: string | undefined
-    transactionAmount: number
-    type: string
-    date: number
+    transactionName: string;
+    transactionType: string | undefined;
+    transactionAmount: number;
+    type: string;
+    date: number;
     constructor(transactionName: string, transactionAmount: number, transactionType: string | undefined, type: string) {
-        this.transactionName = transactionName
-        this.transactionType = transactionType
-        this.transactionAmount = transactionAmount
-        this.type = type
-        this.date = new Date().getTime()
+        this.transactionName = transactionName;
+        this.transactionType = transactionType;
+        this.transactionAmount = transactionAmount;
+        this.type = type;
+        this.date = new Date().getTime();
     }
 }
 
 const renderTransactions = () => {
-    // @ts-ignore
+//@ts-ignore
     const $transactionTableBody = document.querySelector("#transactionTableBody") as HTMLTableSectionElement;
     $transactionTableBody.innerHTML = "";
     INCOMES.forEach((income: Tincome) => {
         $transactionTableBody.innerHTML += `
-                <tr class="transactionTable transactionIncome" >
+                <tr class="transactionTable transactionIncome">
                     <td>${income.transactionName}</td>
                     <td>${income.transactionAmount.toString().seperateCurrency()}</td>
                     <td>Income</td>
@@ -199,7 +196,7 @@ const renderTransactions = () => {
 
     EXPENSES.forEach((expense: Tincome) => {
         $transactionTableBody.innerHTML += `
-                <tr class="transactionTable transactionExpense" >
+                <tr class="transactionTable transactionExpense">
                     <td>${expense.transactionName}</td>
                     <td>${expense.transactionAmount.toString().seperateCurrency()}</td>
                     <td>Expense</td>
@@ -207,62 +204,65 @@ const renderTransactions = () => {
                 </tr>
             `;
     });
-}
-renderTransactions()
+};
 
+renderTransactions();
 
 const createNewTransaction = (e: Event) => {
     e.preventDefault();
 
-    const inputs = Array.from($transactionForm.querySelectorAll("input, select")) as HTMLInputElement[]
+    const inputs = Array.from($transactionForm.querySelectorAll("input, select")) as HTMLInputElement[];
     const values: (string | number | undefined)[] = inputs.map((input) => {
         if (input.type === "number") {
-            return +input.value
+            return +input.value;
         }
-        return input.value ? input.value : undefined
-    })
+        return input.value ? input.value : undefined;
+    });
+    
     if (values.slice(0, getCurrentQuery() === "income" ? -1 : undefined).every((value) => typeof value === "string" ? value?.trim().length > 0 : value && value > 0)) {
-        const newTransaction = new Transaction(...values as [string, number, string | undefined], getCurrentQuery())
+        const newTransaction = new Transaction(...values as [string, number, string | undefined], getCurrentQuery());
+        
         if (getCurrentQuery() === "income") {
-            INCOMES.push(newTransaction)
-            localStorage.setItem("incomes", JSON.stringify(INCOMES))
+            INCOMES.push(newTransaction);
+            localStorage.setItem("incomes", JSON.stringify(INCOMES));
+        } else {
+            EXPENSES.push(newTransaction);
+            localStorage.setItem("expenses", JSON.stringify(EXPENSES));
         }
-        else {
-            EXPENSES.push(newTransaction)
-            localStorage.setItem("expences", JSON.stringify(EXPENSES))
-        }
+        
         window.history.pushState({ path: location.href.split("?")[0] }, "", location.href.split("?")[0]);
-        checkModalOpen()
-        checkBalance()
+        checkModalOpen();
+        checkBalance();
+        
         inputs.forEach((input) => {
             input.value = "";
         });
+        
         renderChart();
         renderBarChart();
-        renderTransactions()
+        renderTransactions();
+    } else {
+        alert("Please fill in all fields correctly!");
     }
-    else {
-        alert("Alert")
-    }
-}
+};
 
 $incomeBtn.addEventListener("click", () => {
-    url.searchParams.set("modal", "income")
+    url.searchParams.set("modal", "income");
     window.history.pushState({ path: location.href + "?" + url.searchParams }, "", location.href + "?" + url.searchParams);
-    checkModalOpen()
-})
+    checkModalOpen();
+});
 
 $expenseBtn.addEventListener("click", () => {
-    url.searchParams.set("modal", "expense")
+    url.searchParams.set("modal", "expense");
     window.history.pushState({ path: location.href + "?" + url.searchParams }, "", location.href + "?" + url.searchParams);
-    checkModalOpen()
-})
+    checkModalOpen();
+});
 
 $closeBtn.addEventListener("click", () => {
     window.history.pushState({ path: location.href.split("?")[0] }, "", location.href.split("?")[0]);
-    checkModalOpen()
-})
+    checkModalOpen();
+});
 
-checkModalOpen()
+checkModalOpen();
 
 $transactionForm.addEventListener("submit", createNewTransaction);

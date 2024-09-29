@@ -18,7 +18,7 @@ const $displayExpenses = document.querySelector("#displayExpenses");
 const $transactionList = document.querySelector("#transactionList");
 const url = new URL(location.href);
 const INCOMES = JSON.parse(localStorage.getItem("incomes")) || [];
-const EXPENSES = JSON.parse(localStorage.getItem("expences")) || [];
+const EXPENSES = JSON.parse(localStorage.getItem("expenses")) || [];
 String.prototype.seperateCurrency = function () {
     return this.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
@@ -36,32 +36,33 @@ const checkBalance = () => {
 checkBalance();
 //@ts-ignore
 let myChartInstance = null;
+//@ts-ignore
+let myBarChartInstance = null;
 const renderChart = () => {
+    //@ts-ignore
+    const $myChart = document.querySelector("#myChart");
     if (myChartInstance) {
         myChartInstance.destroy();
     }
-    //@ts-ignore
-    const $myChart = document.querySelector("#myChart");
     //@ts-ignore
     myChartInstance = new Chart($myChart, {
         type: 'doughnut',
         data: {
             datasets: [{
-                    data: [`${totalIncome - totalExpense}`, totalExpense],
+                    data: [totalIncome - totalExpense, totalExpense],
                     backgroundColor: ['#4CAF50', '#F44336'],
                 }],
         },
         options: {
             responsive: true,
-            elements: {
-                arc: {
-                    borderWidth: 1,
-                }
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
             }
         }
     });
 };
-renderChart();
 const getTopCategories = () => {
     const categoryTotals = {};
     EXPENSES.forEach((expense) => {
@@ -79,8 +80,8 @@ const getTopCategories = () => {
     return sortedCategories;
 };
 const renderBarChart = () => {
-    if (myChartInstance) {
-        myChartInstance.destroy();
+    if (myBarChartInstance) {
+        myBarChartInstance.destroy();
     }
     const topCategories = getTopCategories();
     const labels = topCategories.map(([type]) => type);
@@ -88,7 +89,7 @@ const renderBarChart = () => {
     //@ts-ignore
     const $myBarChart = document.querySelector("#myBarChart");
     //@ts-ignore
-    myChartInstance = new Chart($myBarChart, {
+    myBarChartInstance = new Chart($myBarChart, {
         type: 'bar',
         data: {
             labels: labels,
@@ -110,6 +111,7 @@ const renderBarChart = () => {
         }
     });
 };
+renderChart();
 renderBarChart();
 const checkModalOpen = () => {
     let openModal = getCurrentQuery();
@@ -141,12 +143,12 @@ class Transaction {
     }
 }
 const renderTransactions = () => {
-    // @ts-ignore
+    //@ts-ignore
     const $transactionTableBody = document.querySelector("#transactionTableBody");
     $transactionTableBody.innerHTML = "";
     INCOMES.forEach((income) => {
         $transactionTableBody.innerHTML += `
-                <tr class="transactionTable transactionIncome" >
+                <tr class="transactionTable transactionIncome">
                     <td>${income.transactionName}</td>
                     <td>${income.transactionAmount.toString().seperateCurrency()}</td>
                     <td>Income</td>
@@ -156,7 +158,7 @@ const renderTransactions = () => {
     });
     EXPENSES.forEach((expense) => {
         $transactionTableBody.innerHTML += `
-                <tr class="transactionTable transactionExpense" >
+                <tr class="transactionTable transactionExpense">
                     <td>${expense.transactionName}</td>
                     <td>${expense.transactionAmount.toString().seperateCurrency()}</td>
                     <td>Expense</td>
@@ -183,7 +185,7 @@ const createNewTransaction = (e) => {
         }
         else {
             EXPENSES.push(newTransaction);
-            localStorage.setItem("expences", JSON.stringify(EXPENSES));
+            localStorage.setItem("expenses", JSON.stringify(EXPENSES));
         }
         window.history.pushState({ path: location.href.split("?")[0] }, "", location.href.split("?")[0]);
         checkModalOpen();
@@ -196,7 +198,7 @@ const createNewTransaction = (e) => {
         renderTransactions();
     }
     else {
-        alert("Alert");
+        alert("Please fill in all fields correctly!");
     }
 };
 $incomeBtn.addEventListener("click", () => {
