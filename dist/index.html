@@ -11,9 +11,11 @@
 </head>
 <body>
     
-    <div class="container p-10 mx-auto h-screen gap-10 flex flex-col">
+    <div class="container p-10 mx-auto gap-10 flex flex-col">
         <div class="h-[350px] shadow-[0_0px_20px_0px_lightgrey] p-10 rounded-3xl">
-            <h1 class="text-4xl font-black text-green-600">Expense Tracker</h1>
+            <div>
+                <h1 class="text-4xl font-black text-green-600">Expense Tracker</h1>
+            </div>
 
             <div class="w-full items-center mt-5 h-[200px] flex gap-5">
                 <div class="max-w-[500px] w-full h-full shadow-[0_0px_20px_0px_lightgrey] rounded-2xl flex items-center flex-col justify-center">
@@ -55,7 +57,11 @@
                 </tbody>
             </table>
         </div>
-        
+        <div id="" class="flex-1 max-w-[500px] flex justify-center items-center shadow-[0_0px_20px_0px_lightgrey] rounded-3xl p-10 gap-10 overflow-y-auto w-full">
+        <!-- <canvas  class="w-[500px] " id="myBarChart"></canvas> -->
+
+        </div>
+        </div>
 
     <div id="overlay" class="w-screen h-screen fixed top-0 left-0 bg-[rgba(0,0,0,0.5)] backdrop-blur-md hidden">
         <div role="alert" class="alert alert-error hidden" id="alertError">
@@ -89,7 +95,6 @@
             </form>
         </div>
     </div>
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>exports = {};</script>
     <script src="./js/app.js"></script>

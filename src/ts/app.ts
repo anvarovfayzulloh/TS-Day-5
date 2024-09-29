@@ -15,6 +15,7 @@ const $displayExpenses = document.querySelector("#displayExpenses") as HTMLEleme
 //@ts-ignore
 const $transactionList = document.querySelector("#transactionList") as HTMLDivElement;
 
+
 const url = new URL(location.href);
 
 const INCOMES = JSON.parse(localStorage.getItem("incomes") as string) || []
@@ -65,10 +66,10 @@ const renderChart = () => {
         myChartInstance.destroy();
     }
 
-//@ts-ignore
+    //@ts-ignore
     const $myChart = document.querySelector("#myChart") as HTMLCanvasElement;
 
-//@ts-ignore
+    //@ts-ignore
     myChartInstance = new Chart($myChart, {
         type: 'doughnut',
         data: {
@@ -89,6 +90,66 @@ const renderChart = () => {
 };
 
 renderChart()
+
+const getTopCategories = () => {
+    const categoryTotals: { [key: string]: number } = {};
+
+    EXPENSES.forEach((expense: Tincome) => {
+        const { transactionType, transactionAmount } = expense;
+
+        if (transactionType) {
+            if (!categoryTotals[transactionType]) {
+                categoryTotals[transactionType] = 0;
+            }
+            categoryTotals[transactionType] += transactionAmount;
+        }
+    });
+
+    const sortedCategories = Object.entries(categoryTotals)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3);
+
+    return sortedCategories;
+};
+
+const renderBarChart = () => {
+    if (myChartInstance) {
+        myChartInstance.destroy();
+    }
+
+    const topCategories = getTopCategories();
+    const labels = topCategories.map(([type]) => type);
+    const data = topCategories.map(([_, total]) => total);
+
+    //@ts-ignore
+    const $myBarChart = document.querySelector("#myBarChart") as HTMLCanvasElement;
+    //@ts-ignore
+    myChartInstance = new Chart($myBarChart, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Total Expenses by Category',
+                data: data,
+                backgroundColor: '#F44336',
+                borderColor: '#D32F2F',
+                borderWidth: 1
+            }],
+        },
+        options: {
+            responsive: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+};
+
+renderBarChart();
+
+
 
 const checkModalOpen = () => {
     let openModal = getCurrentQuery();
@@ -125,29 +186,28 @@ const renderTransactions = () => {
     // @ts-ignore
     const $transactionTableBody = document.querySelector("#transactionTableBody") as HTMLTableSectionElement;
     $transactionTableBody.innerHTML = "";
-
     INCOMES.forEach((income: Tincome) => {
         $transactionTableBody.innerHTML += `
-            <tr class="transactionTable" >
-                <td>${income.transactionName}</td>
-                <td>${income.transactionAmount.toString().seperateCurrency()}</td>
-                <td>Income</td>
-                <td>${new Date(income.date).toLocaleDateString()}</td>
-            </tr>
-        `;
+                <tr class="transactionTable transactionIncome" >
+                    <td>${income.transactionName}</td>
+                    <td>${income.transactionAmount.toString().seperateCurrency()}</td>
+                    <td>Income</td>
+                    <td>${new Date(income.date).toLocaleDateString()}</td>
+                </tr>
+            `;
     });
 
     EXPENSES.forEach((expense: Tincome) => {
         $transactionTableBody.innerHTML += `
-            <tr class="transactionTable" >
-                <td>${expense.transactionName}</td>
-                <td>${expense.transactionAmount.toString().seperateCurrency()}</td>
-                <td>Expense</td>
-                <td>${new Date(expense.date).toLocaleDateString()}</td>
-            </tr>
-        `;
+                <tr class="transactionTable transactionExpense" >
+                    <td>${expense.transactionName}</td>
+                    <td>${expense.transactionAmount.toString().seperateCurrency()}</td>
+                    <td>Expense</td>
+                    <td>${new Date(expense.date).toLocaleDateString()}</td>
+                </tr>
+            `;
     });
-};
+}
 renderTransactions()
 
 
@@ -178,8 +238,9 @@ const createNewTransaction = (e: Event) => {
             input.value = "";
         });
         renderChart();
+        renderBarChart();
         renderTransactions()
-}
+    }
     else {
         alert("Alert")
     }

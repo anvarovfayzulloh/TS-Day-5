@@ -49,3 +49,12 @@
     border: none;
     border-bottom: 3px solid rgba(0, 0, 0, 0.266);
 }
+
+.transactionExpense{
+    background-color: #dc2626c3;
+    color: white;
+}
+.transactionIncome{
+    background-color: #16a34ac3;
+    color: white;
+}

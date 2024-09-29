@@ -62,6 +62,55 @@ const renderChart = () => {
     });
 };
 renderChart();
+const getTopCategories = () => {
+    const categoryTotals = {};
+    EXPENSES.forEach((expense) => {
+        const { transactionType, transactionAmount } = expense;
+        if (transactionType) {
+            if (!categoryTotals[transactionType]) {
+                categoryTotals[transactionType] = 0;
+            }
+            categoryTotals[transactionType] += transactionAmount;
+        }
+    });
+    const sortedCategories = Object.entries(categoryTotals)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3);
+    return sortedCategories;
+};
+const renderBarChart = () => {
+    if (myChartInstance) {
+        myChartInstance.destroy();
+    }
+    const topCategories = getTopCategories();
+    const labels = topCategories.map(([type]) => type);
+    const data = topCategories.map(([_, total]) => total);
+    //@ts-ignore
+    const $myBarChart = document.querySelector("#myBarChart");
+    //@ts-ignore
+    myChartInstance = new Chart($myBarChart, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                    label: 'Total Expenses by Category',
+                    data: data,
+                    backgroundColor: '#F44336',
+                    borderColor: '#D32F2F',
+                    borderWidth: 1
+                }],
+        },
+        options: {
+            responsive: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+};
+renderBarChart();
 const checkModalOpen = () => {
     let openModal = getCurrentQuery();
     let $select = $transactionForm.querySelector("select");
@@ -97,23 +146,23 @@ const renderTransactions = () => {
     $transactionTableBody.innerHTML = "";
     INCOMES.forEach((income) => {
         $transactionTableBody.innerHTML += `
-            <tr class="transactionTable" >
-                <td>${income.transactionName}</td>
-                <td>${income.transactionAmount.toString().seperateCurrency()}</td>
-                <td>Income</td>
-                <td>${new Date(income.date).toLocaleDateString()}</td>
-            </tr>
-        `;
+                <tr class="transactionTable transactionIncome" >
+                    <td>${income.transactionName}</td>
+                    <td>${income.transactionAmount.toString().seperateCurrency()}</td>
+                    <td>Income</td>
+                    <td>${new Date(income.date).toLocaleDateString()}</td>
+                </tr>
+            `;
     });
     EXPENSES.forEach((expense) => {
         $transactionTableBody.innerHTML += `
-            <tr class="transactionTable" >
-                <td>${expense.transactionName}</td>
-                <td>${expense.transactionAmount.toString().seperateCurrency()}</td>
-                <td>Expense</td>
-                <td>${new Date(expense.date).toLocaleDateString()}</td>
-            </tr>
-        `;
+                <tr class="transactionTable transactionExpense" >
+                    <td>${expense.transactionName}</td>
+                    <td>${expense.transactionAmount.toString().seperateCurrency()}</td>
+                    <td>Expense</td>
+                    <td>${new Date(expense.date).toLocaleDateString()}</td>
+                </tr>
+            `;
     });
 };
 renderTransactions();
@@ -143,6 +192,7 @@ const createNewTransaction = (e) => {
             input.value = "";
         });
         renderChart();
+        renderBarChart();
         renderTransactions();
     }
     else {
