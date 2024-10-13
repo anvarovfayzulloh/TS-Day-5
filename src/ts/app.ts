@@ -1,20 +1,11 @@
-//@ts-ignore
 const $overlay = document.querySelector("#overlay") as HTMLDivElement;
-//@ts-ignore
 const $incomeBtn = document.querySelector("#incomeBtn") as HTMLButtonElement;
-//@ts-ignore
 const $expenseBtn = document.querySelector("#expenseBtn") as HTMLButtonElement;
-//@ts-ignore
 const $closeBtn = document.querySelector("#closeBtn") as HTMLButtonElement;
-//@ts-ignore
 const $transactionForm = document.querySelector("#transactionForm") as HTMLFormElement;
-//@ts-ignore
 const $displayIncomes = document.querySelector("#displayIncomes") as HTMLElement;
-//@ts-ignore
 const $displayExpenses = document.querySelector("#displayExpenses") as HTMLElement;
-//@ts-ignore
 const $transactionList = document.querySelector("#transactionList") as HTMLDivElement;
-//@ts-ignore
 const $clearBtn = document.querySelector("#clearBtn") as HTMLButtonElement;
 
 const url = new URL(location.href);
